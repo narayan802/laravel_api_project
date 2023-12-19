@@ -3,23 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\Api\ProductrController;
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-//Open Routes
-Route ::post("register",[ApiController::class,"register"]);
-Route::post("login",[ApiController::class,"login"]);
+
+
+
+Route::post("register", [ApiController::class, "register"]);
+Route::post("login", [ApiController::class, "login"]);
 
 
 
@@ -27,9 +17,15 @@ Route::post("login",[ApiController::class,"login"]);
 // Route::group([
 //     "middleware"=>["auth:api"]
 // ],function(){
-   
+
 // });
-Route::middleware('auth:api')->group(function(){
-    Route::get('profile',[ApiController::class,'profile']);
-    Route::get("logout",[ApiController::class,"logout"]);
+Route::middleware('auth:api')->group(function () {
+    Route::get('profile', [ApiController::class, 'profile']);
+    Route::get("logout", [ApiController::class, "logout"]);
+
+    Route::get('product', [ProductrController::class, 'show']);
+    Route::post('product/insert', [ProductrController::class, 'insert']);
+    Route::get('product/{id}', [ProductrController::class, 'singel_data']);
+    Route::post('product/update/{id}', [ProductrController::class, 'update_data']);
+    Route::delete('product/delete/{id}', [ProductrController::class, 'destroy']);
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,6 @@ class ApiController extends Controller
             'password'=>'required|confirmed',
         ]);
        
-
         //Create User
        $user= User::create([
             'name'=>$request->name,
@@ -27,26 +27,17 @@ class ApiController extends Controller
             'password'=> Hash::make($request->password),
            
         ]);
-        if ($user) {
-            $data = [ 
-                'user' => $user,
-                'status' => 200,
-                'message' => 'User Regiter Sucessfully',
-            ];
-            return response()->json($data, 200);
-        } else {
-            $data = [
-                'status' => 404,
-                'message' => 'User Not Regiter',
-            ];
-            return response()->json($data,404);
-        }
+        $data = [
+            'user' => $user,
+            'status' => 200,
+            'message' => 'User Regiter Sucessfully',
+        ];
+        return response()->json($data, 200);
     }
 
     //Login Api (POST)
     public function login(Request $request){
         $request->validate([
-            
             'email'=>'required|email',
             'password'=>'required',
         ]);
@@ -55,7 +46,7 @@ class ApiController extends Controller
             'password'=>$request->password
         ])){
             $user = Auth::User();
-            $accessToken = $user->createToken('authToken')->accessToken;
+            $accessToken = $user->createToken($request->id)->accessToken;
             $data = [
                 'access_token' => $accessToken,
                 'status' => 200,
@@ -75,7 +66,6 @@ class ApiController extends Controller
     //Profile Api (GET)
     public function profile(){
         $user = Auth::User();
-        // dd($user);
         $data = [
             'user'=>$user,
             'status' => 200,
@@ -87,7 +77,6 @@ class ApiController extends Controller
 
     //Logout Api (GET)
     public function logout(){
-        // $user = Auth::User();
         auth()->User()->token()->revoke();
         $data = [
             'status' => 200,
